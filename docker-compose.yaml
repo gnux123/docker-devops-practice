@@ -1,0 +1,36 @@
+version: '2'
+
+services:
+    gitlab-server:
+        image: gitlab/gitlab-ce
+        environment:
+            - GITLAB_OMNIBUS_CONFIG="external_url 'http://34.68.0.31/';"
+        volumes:
+            - ./config:/etc/gitlab
+            - ./logs:/var/log/gitlab
+            - ./data:/var/opt/gitlab
+        ports:
+            - "443:443"
+            - "80:80"
+            - "10022:22"
+        restart: always
+
+    jenkins-server:
+        image: jenkinsci/blueocean:latest
+        environment:
+            JENKINS_HOST_HOME: "/data/jenkins"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./jenkins:/var/jenkins_home
+        ports:
+            - "8080:8080"
+            - "5000:5000"
+            - "50000:50000"
+        restart: always
+
+    sonarqube:
+        image: sonarqube:latest
+        ports:
+            - "9000:9000"
+        restart: always
+
